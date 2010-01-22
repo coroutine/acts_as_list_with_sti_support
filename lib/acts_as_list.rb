@@ -47,10 +47,7 @@ module Coroutine                    #:nodoc:
           options       = {} if !options.is_a?(Hash)
           column        = options.key?(:column) ? options[:column]  : :position
           scope         = options.key?(:scope)  ? options[:scope]   : "1 = 1"
-          if scope.is_a?(Symbol) && scope.to_s !~ /_id$/ && self.column_names.include?("#{scope}_id")
-            scope =  "#{scope}_id".to_sym
-          end
-          
+                    
 
           #--------------------------------------------
           # mix methods into class definition
@@ -62,24 +59,19 @@ module Coroutine                    #:nodoc:
             class_inheritable_reader    :acts_as_list_column
             write_inheritable_attribute :acts_as_list_scope,            scope
             class_inheritable_reader    :acts_as_list_scope
+            write_inheritable_attribute :acts_as_list_default_scope,    "1 = 1"
+            class_inheritable_reader    :acts_as_list_default_scope
             write_inheritable_attribute :acts_as_list_scope_condition,  nil
             class_inheritable_reader    :acts_as_list_scope_condition
             
             
-            # Add validations
-            validates_presence_of       column
-            validates_numericality_of   column, :only_integer => true, :greater_than => 0
+            # Add validations (column is allowed to be nil to support soft deletes)
+            validates_numericality_of   column, :only_integer => true, :greater_than => 0, :allow_nil => true
             
             
             # Add callbacks
-            before_create   :add_to_list_bottom
-            before_destroy  :remove_from_list
-            
-            
-            # Add default scope, if none defined
-            if self.default_scoping.empty?
-              default_scope :order => column
-            end
+            before_validation_on_create   :add_to_list_bottom
+            before_destroy                :remove_from_list
             
             
             # Include instance methods
@@ -108,19 +100,36 @@ module Coroutine                    #:nodoc:
           acts_as_list_column
         end
         
-        # Returns the scope condition appropriate for the specified definition.
+        # Returns the scope condition appropriate for the specified definition. (This could probably
+        # be refactored for brevity.)
         def scope_condition
           if acts_as_list_scope_condition.nil?
+            
+            # if symbol, do convenience conversions
             if acts_as_list_scope.is_a?(Symbol)
-              if acts_as_list_scope.to_s.nil?
-                acts_as_list_scope_condition = "#{acts_as_list_scope.to_s} IS NULL"
+              scope_as_sym  = acts_as_list_scope
+              scope_as_str  = acts_as_list_scope.to_s
+              if scope_as_str.nil?
+                acts_as_list_scope_condition = "#{scope_as_str} IS NULL"
               else
-                acts_as_list_scope_condition = "#{acts_as_list_scope.to_s} = \'#{self[acts_as_list_scope]}\'"
+                scope_with_id = scope_as_str + "_id"
+                if scope_as_str !~ /_id$/ && acts_as_list_class.column_names.include?("#{scope_with_id}")
+                  scope_as_sym = scope_with_id.to_sym
+                  scope_as_str = scope_as_sym.to_s
+                end
+                acts_as_list_scope_condition = "#{scope_as_str} = \'#{self[scope_as_sym]}\'"
               end
+            
+            # if lambda, execute in scope of instance
+            elsif acts_as_list_scope.is_a?(Proc)
+              acts_as_list_scope_condition = acts_as_list_scope.call(self)
+              
+            # else, return string as is  
             else
-              acts_as_list_scope_condition = acts_as_list_scope || "1 = 1"
+             acts_as_list_scope_condition = !acts_as_list_scope.blank? ? acts_as_list_scope.to_s : acts_as_list_default_scope.to_s
             end
           end
+          
           acts_as_list_scope_condition
         end
                 
@@ -132,7 +141,7 @@ module Coroutine                    #:nodoc:
         # Swap positions with the next lower item, if one exists.
         def move_lower
           return unless lower_item
-
+          
           acts_as_list_class.transaction do
             lower_item.decrement_position
             increment_position
