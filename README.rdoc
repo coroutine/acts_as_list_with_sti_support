@@ -35,12 +35,12 @@ The plugin accepts two optional parameters.
     acts_as_list :column => :pos, :scope => :funky_list
   end
 
-  The +scope+ option can be supplied as a symbol or as a string.  The generated scope condition
-  will differ depending on the value's Type and the schema of the associated table.
+The +scope+ option can be supplied as a symbol or as a string.  The generated scope condition
+will differ depending on the value's Type and the schema of the associated table.
 
-  +scope => :type+:: yields "type_id = 99", if type_id is defined on the table
-  +scope => :type+:: yields "type = 'MyClass'", if type_id is not defined on the table 
-  +scope => "type_id = #{type_id}":: yields "type_id = 99"
++scope => :type+:: yields "type_id = 99", if type_id is defined on the table
++scope => :type+:: yields "type = 'MyClass'", if type_id is not defined on the table 
++scope => "type_id = #{type_id}":: yields "type_id = 99"
 
 If you use the plugin within a single table inheritance (STI) design, no extra configuration is needed
 to cause the position values to be scoped by type.
@@ -58,5 +58,5 @@ to cause the position values to be scoped by type.
 
 Copyright (c) 2010 Coroutine LLC, released under the MIT license
 
-The plugin is a modestly modified version of the rails acts_as_list plugin release under the
+The plugin is a modestly modified version of the rails acts_as_list plugin released under the
 MIT license by David Heinemeier Hansson.
