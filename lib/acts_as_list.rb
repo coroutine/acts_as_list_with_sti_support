@@ -74,6 +74,12 @@ module Coroutine                    #:nodoc:
             before_destroy                :remove_from_list
             
             
+            # if no default scoping, order by position
+            if self.default_scoping.empty?
+              default_scope :order => column
+            end
+            
+            
             # Include instance methods
             include Coroutine::Acts::List::InstanceMethods
 

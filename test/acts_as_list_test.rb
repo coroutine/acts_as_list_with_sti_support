@@ -107,9 +107,9 @@ end
 
 # Contacts
 class Contact < ActiveRecord::Base
-  has_many :emails,   :order => :pos
-  has_many :phones,   :order => :position
-  has_many :websites, :order => :position
+  has_many :emails
+  has_many :phones
+  has_many :websites
   
   def email_ids
     self.emails(true).map(&:id)
