@@ -7,7 +7,7 @@ require 'active_support/test_case'
 # Define global methods
 #----------------------------------------------------------
 
-class Test::Unit::TestCase
+class ActiveSupport::TestCase
   
   # This method allows us to use a convenient notation for testing
   # model validations.

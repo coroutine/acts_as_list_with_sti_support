@@ -176,7 +176,7 @@ end
 # Standard Tests
 #---------------------------------------------------------
 
-class ActsAsListTest < Test::Unit::TestCase
+class ActsAsListTest < ActiveSupport::TestCase
 
   
   #---------------------------------------------
