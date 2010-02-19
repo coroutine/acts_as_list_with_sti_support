@@ -2,16 +2,8 @@
 # Requirements
 #---------------------------------------------------------
 
-# require active record
-require "rubygems"
-gem     "activerecord", ">= 2.3.2"
-require "active_record"
-
-
-# require test stuff and plugin
+# all generic requirements are in the helper
 require "test/test_helper"
-require "test/unit"
-require "#{File.dirname(__FILE__)}/../init"
 
 
 

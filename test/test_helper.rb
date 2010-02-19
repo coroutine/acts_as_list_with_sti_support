@@ -1,6 +1,13 @@
-require 'rubygems'
-require 'active_support'
-require 'active_support/test_case'
+# require rails stuff
+require "rubygems"
+require "active_record"
+require "active_support"
+require "active_support/test_case"
+require "test/unit"
+
+# require plugin
+require "#{File.dirname(__FILE__)}/../init"
+
 
 
 #----------------------------------------------------------
