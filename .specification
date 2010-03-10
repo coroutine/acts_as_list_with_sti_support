@@ -1,0 +1,81 @@
+--- !ruby/object:Gem::Specification 
+name: acts_as_list_with_sti_support
+version: !ruby/object:Gem::Version 
+  prerelease: false
+  segments: 
+  - 0
+  - 1
+  - 0
+  version: 0.1.0
+platform: ruby
+authors: 
+- Coroutine
+- John Dugan
+autorequire: 
+bindir: bin
+cert_chain: []
+
+date: 2010-03-10 00:00:00 -06:00
+default_executable: 
+dependencies: 
+- !ruby/object:Gem::Dependency 
+  name: activesupport
+  prerelease: false
+  requirement: &id001 !ruby/object:Gem::Requirement 
+    requirements: 
+    - - ">="
+      - !ruby/object:Gem::Version 
+        segments: 
+        - 0
+        version: "0"
+  type: :runtime
+  version_requirements: *id001
+description: This acts_as extension provides the capabilities for sorting and reordering a number of objects in a list. The class that has this specified needs to have a position column defined as an integer on the mapped database table.
+email: jdugan@coroutine.com
+executables: []
+
+extensions: []
+
+extra_rdoc_files: 
+- README.rdoc
+files: 
+- MIT-LICENSE
+- README.rdoc
+- Rakefile
+- VERSION
+- init.rb
+- test/test_helper.rb
+has_rdoc: true
+homepage: http://github.com/coroutine/acts_as_label_with_sti_support
+licenses: []
+
+post_install_message: 
+rdoc_options: 
+- --charset=UTF-8
+require_paths: 
+- lib
+required_ruby_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      segments: 
+      - 0
+      version: "0"
+required_rubygems_version: !ruby/object:Gem::Requirement 
+  requirements: 
+  - - ">="
+    - !ruby/object:Gem::Version 
+      segments: 
+      - 0
+      version: "0"
+requirements: []
+
+rubyforge_project: 
+rubygems_version: 1.3.6
+signing_key: 
+specification_version: 3
+summary: Gem version of acts_as_list_with_sti_support Rails plugin, a smarter version of acts_as_list.
+test_files: 
+- test/acts_as_list_with_sti_support_test.rb
+- test/test_helper.rb
+
