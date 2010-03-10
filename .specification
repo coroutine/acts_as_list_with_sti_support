@@ -5,8 +5,8 @@ version: !ruby/object:Gem::Version
   segments: 
   - 0
   - 1
-  - 0
-  version: 0.1.0
+  - 1
+  version: 0.1.1
 platform: ruby
 authors: 
 - Coroutine
@@ -39,14 +39,19 @@ extensions: []
 extra_rdoc_files: 
 - README.rdoc
 files: 
+- .specification
 - MIT-LICENSE
 - README.rdoc
 - Rakefile
 - VERSION
+- acts_as_list_with_sti_support-0.1.0.gem
+- acts_as_list_with_sti_support.gemspec
 - init.rb
+- lib/acts_as_list_with_sti_support.rb
+- test/acts_as_list_with_sti_support_test.rb
 - test/test_helper.rb
 has_rdoc: true
-homepage: http://github.com/coroutine/acts_as_label_with_sti_support
+homepage: http://github.com/coroutine/acts_as_list_with_sti_support
 licenses: []
 
 post_install_message: 

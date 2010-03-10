@@ -5,7 +5,7 @@
 
 Gem::Specification.new do |s|
   s.name = %q{acts_as_list_with_sti_support}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Coroutine", "John Dugan"]
@@ -16,14 +16,19 @@ Gem::Specification.new do |s|
     "README.rdoc"
   ]
   s.files = [
-    "MIT-LICENSE",
+    ".specification",
+     "MIT-LICENSE",
      "README.rdoc",
      "Rakefile",
      "VERSION",
+     "acts_as_list_with_sti_support-0.1.0.gem",
+     "acts_as_list_with_sti_support.gemspec",
      "init.rb",
+     "lib/acts_as_list_with_sti_support.rb",
+     "test/acts_as_list_with_sti_support_test.rb",
      "test/test_helper.rb"
   ]
-  s.homepage = %q{http://github.com/coroutine/acts_as_label_with_sti_support}
+  s.homepage = %q{http://github.com/coroutine/acts_as_list_with_sti_support}
   s.rdoc_options = ["--charset=UTF-8"]
   s.require_paths = ["lib"]
   s.rubygems_version = %q{1.3.6}

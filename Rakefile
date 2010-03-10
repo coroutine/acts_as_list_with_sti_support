@@ -32,7 +32,7 @@ begin
     gemspec.summary           = "Gem version of acts_as_list_with_sti_support Rails plugin, a smarter version of acts_as_list."
     gemspec.description       = "This acts_as extension provides the capabilities for sorting and reordering a number of objects in a list. The class that has this specified needs to have a position column defined as an integer on the mapped database table."
     gemspec.email             = "jdugan@coroutine.com"
-    gemspec.homepage          = "http://github.com/coroutine/acts_as_label_with_sti_support"
+    gemspec.homepage          = "http://github.com/coroutine/acts_as_list_with_sti_support"
     gemspec.authors           = ["Coroutine", "John Dugan"]
     gemspec.add_dependency "activesupport"
   end
