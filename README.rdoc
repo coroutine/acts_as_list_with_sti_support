@@ -1,4 +1,4 @@
-= acts_as_list
+= acts_as_list_with_sti_support
 
 
 == Description
@@ -38,9 +38,9 @@ The plugin accepts two optional parameters.
 The +scope+ option can be supplied as a symbol or as a lambda.  The generated scope condition
 will differ depending on the value's Type and the schema of the associated table.
 
-+scope => :type+:: yields "type_id = '99'", if type_id is defined on the table
-+scope => :type+:: yields "type = 'MyClass'", if type_id is not defined on the table 
-+scope => lambda { |instance| "type_id = '#{instance.type_id}'":: yields "type_id = '99'"
++scope => type_symbol+:: yields "type_id = '99'", if type_id is defined on the table
++scope => type_symbol+:: yields "type = '99'", if type_id is not defined on the table 
++scope => lambda { |instance| "type_id = '#{instance.type_id}'"}+:: yields "type_id = '99'"
 
 If you use the plugin within a single table inheritance (STI) design, no extra configuration is needed
 to cause the position values to be scoped by type.
