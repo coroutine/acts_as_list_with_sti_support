@@ -35,8 +35,8 @@ begin
     gemspec.name              = "acts_as_list_with_sti_support"
     gemspec.summary           = "Gem version of acts_as_list_with_sti_support Rails plugin, a smarter version of acts_as_list."
     
-    gemspec.add_dependency("activerecord")
-    gemspec.add_dependency("activesupport")
+    gemspec.add_dependency("activerecord", ">=2.3.4")
+    gemspec.add_development_dependency("activesupport", ">=2.3.4")
     gemspec.files.include("lib/**/*.rb")
   end
   Jeweler::GemcutterTasks.new

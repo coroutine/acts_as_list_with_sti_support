@@ -70,8 +70,12 @@ module Coroutine                    #:nodoc:
             
             
             # Add callbacks
-            before_validation_on_create   :add_to_list_bottom
-            before_destroy                :remove_from_list
+            begin
+              before_validation             :add_to_list_bottom, :on => :create     # rails 3
+            rescue
+              before_validation_on_create   :add_to_list_bottom                     # rails 2
+            end
+            before_destroy                  :remove_from_list
             
             
             # if no default scoping, order by position
