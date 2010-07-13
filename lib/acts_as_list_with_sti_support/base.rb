@@ -223,17 +223,23 @@ module Coroutine                    #:nodoc:
         # Return the next higher item in the list.
         def higher_item
           return nil unless in_list?
-          acts_as_list_class.find(:first, :conditions =>
-            "#{scope_condition} AND #{position_column} = #{(send(position_column).to_i - 1).to_s}"
-          )
+          conditions = "#{scope_condition} AND #{position_column} = #{(send(position_column).to_i - 1).to_s}"
+          begin
+            acts_as_list_class.where(conditions).first
+          rescue
+            acts_as_list_class.find(:first, :conditions => conditions)
+          end
         end
 
         # Return the next lower item in the list.
         def lower_item
           return nil unless in_list?
-          acts_as_list_class.find(:first, :conditions =>
-            "#{scope_condition} AND #{position_column} = #{(send(position_column).to_i + 1).to_s}"
-          )
+          conditions = "#{scope_condition} AND #{position_column} = #{(send(position_column).to_i + 1).to_s}"
+          begin
+            acts_as_list_class.where(conditions).first
+          rescue
+            acts_as_list_class.find(:first, :conditions => conditions)
+          end
         end
 
         # Test if this record is in a list
@@ -259,9 +265,14 @@ module Coroutine                    #:nodoc:
 
           # Returns the bottom item
           def bottom_item(except = nil)
-            conditions = scope_condition
-            conditions = "#{conditions} AND #{self.class.primary_key} != #{except.id}" if except
-            acts_as_list_class.find(:first, :conditions => conditions, :order => "#{position_column} DESC")
+            conditions  = scope_condition
+            conditions  = "#{conditions} AND #{self.class.primary_key} != #{except.id}" if except
+            order_by    = "#{position_column} DESC"
+            begin
+              acts_as_list_class.where(conditions).first.order(order_by)
+            rescue
+              acts_as_list_class.find(:first, :conditions => conditions, :order => order_by)
+            end
           end
 
           # Forces item to assume the bottom position in the list.
