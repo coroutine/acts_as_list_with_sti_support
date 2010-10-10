@@ -59,12 +59,75 @@ to cause the position values to be scoped by type.
 	
   class BillingFrequency < Label
   end
+	
+
+
+== Helpful Links
+
+* <b>Repository:</b> http://github.com/coroutine/acts_as_list_with_sti_support
+* <b>Gem:</b> http://rubygems.org/gems/acts_as_list_with_sti_support
+* <b>Authors:</b> http://coroutine.com
+
+
+
+== Installation (Rails 2)
+
+Install me from RubyGems.org and add a gem dependency in the appropriate file.
+
+	$ gem install acts_as_list_with_sti_support
+
+Or install me as a plugin.
+
+	$ script/plugin install git://github.com/coroutine/acts_as_list_with_sti_support.git
+
+
+
+== Installation (Rails 3)
+
+Install me from RubyGems.org by adding a gem dependency to your Gemfile.  Bundler does 
+the rest.
+
+	gem "acts_as_list_with_sti_support"
+
+	$ bundle install
+
+
+
+== Gemroll
+
+Other gems by Coroutine include:
+
+* {acts_as_current}[http://github.com/coroutine/acts_as_current]
+* {acts_as_label}[http://github.com/coroutine/acts_as_label]
+* {delayed_form_observer}[http://github.com/coroutine/delayed_form_observer]
+* {kenny_dialoggins}[http://github.com/coroutine/kenny_dialoggins]
+* {michael_hintbuble}[http://github.com/coroutine/michael_hintbuble]
+* {tiny_navigation}[http://github.com/coroutine/tiny_navigation]
 
 
 
 == License
 
-Copyright (c) 2010 Coroutine LLC, released under the MIT license
+Copyright (c) 2010 {Coroutine LLC}[http://coroutine.com].
+
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+"Software"), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 The plugin is a modestly modified version of the rails acts_as_list plugin released under the
 MIT license by David Heinemeier Hansson.
