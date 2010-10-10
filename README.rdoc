@@ -70,6 +70,17 @@ to cause the position values to be scoped by type.
 
 
 
+== Installation (Rails 3)
+
+Install me from RubyGems.org by adding a gem dependency to your Gemfile.  Bundler does 
+the rest.
+
+	gem "acts_as_list_with_sti_support"
+
+	$ bundle install
+
+
+
 == Installation (Rails 2)
 
 Install me from RubyGems.org and add a gem dependency in the appropriate file.
@@ -79,17 +90,6 @@ Install me from RubyGems.org and add a gem dependency in the appropriate file.
 Or install me as a plugin.
 
 	$ script/plugin install git://github.com/coroutine/acts_as_list_with_sti_support.git
-
-
-
-== Installation (Rails 3)
-
-Install me from RubyGems.org by adding a gem dependency to your Gemfile.  Bundler does 
-the rest.
-
-	gem "acts_as_list_with_sti_support"
-
-	$ bundle install
 
 
 
