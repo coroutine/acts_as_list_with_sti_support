@@ -80,7 +80,7 @@ module Coroutine                    #:nodoc:
             
             # if no default scoping, order by position
             if self.default_scoping.empty?
-              default_scope :order => column
+              default_scope :order => column.to_s
             end
             
             
