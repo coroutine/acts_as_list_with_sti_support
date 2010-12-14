@@ -5,13 +5,13 @@
 
 Gem::Specification.new do |s|
   s.name = %q{acts_as_list_with_sti_support}
-  s.version = "1.0.1"
+  s.version = "1.0.2"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Coroutine", "John Dugan"]
-  s.date = %q{2010-11-05}
+  s.date = %q{2010-12-13}
   s.description = %q{This acts_as extension does everything acts_as_list does, but it also works in single table inheritance designs and accepts less brain-damaged scope syntax.}
-  s.email = %q{jdugan@coroutine.com}
+  s.email = %q{gem@coroutine.com}
   s.extra_rdoc_files = [
     "README.rdoc"
   ]

@@ -69,27 +69,29 @@ module Coroutine                    #:nodoc:
             validates_numericality_of   column, :only_integer => true, :greater_than => 0, :allow_nil => true
             
             
-            # Add callbacks
-            begin
-              before_validation             :add_to_list_bottom, :on => :create     # rails 3
-            rescue
-              before_validation_on_create   :add_to_list_bottom                     # rails 2
-            end
-            before_destroy                  :remove_from_list
-            
-            
-            # if no default scoping, order by position
-            if self.default_scoping.empty?
-              default_scope :order => column.to_s
-            end
-            
-            
             # Include instance methods
             include Coroutine::ActsAsList::Base::InstanceMethods
 
+
+            # rails 3
+            if self.respond_to?(:arel_table)
+              before_validation             :add_to_list_bottom, :if => :position_blank?, :on => :create     
+              before_destroy                :remove_from_list
+            
+            # rails 2
+            else
+              before_validation_on_create   :add_to_list_bottom, :if => :position_blank? 
+              before_destroy                :remove_from_list
+              
+              if self.default_scoping.empty?
+                default_scope :order => column.to_s
+              end
+            end
+            
           end
           
         end
+         
       end
 
 
@@ -100,18 +102,21 @@ module Coroutine                    #:nodoc:
       #
       module InstanceMethods
         
-        # Return the instance's class object
+        # This method returns the instance's class object
+        #
         def acts_as_list_class
           self.class
         end
         
-        # Returns the column name that holds the position value.
+        # This method returns the column name that holds the position value.
+        #
         def position_column
           acts_as_list_column
         end
         
-        # Returns the scope condition appropriate for the specified definition. (This could probably
-        # be refactored for brevity.)
+        # This method returns the scope condition appropriate for the specified definition. (This 
+        # could probably be refactored for brevity.)
+        #
         def scope_condition
           if acts_as_list_scope_condition.nil?
             
@@ -224,20 +229,21 @@ module Coroutine                    #:nodoc:
         def higher_item
           return nil unless in_list?
           conditions = "#{scope_condition} AND #{position_column} = #{(send(position_column).to_i - 1).to_s}"
-          begin
+          if self.rails_3?
             acts_as_list_class.where(conditions).first
-          rescue
+          else
             acts_as_list_class.find(:first, :conditions => conditions)
           end
         end
 
-        # Return the next lower item in the list.
+        # This method returns the next lower item in the list.
+        #
         def lower_item
           return nil unless in_list?
           conditions = "#{scope_condition} AND #{position_column} = #{(send(position_column).to_i + 1).to_s}"
-          begin
+          if self.rails_3?
             acts_as_list_class.where(conditions).first
-          rescue
+          else
             acts_as_list_class.find(:first, :conditions => conditions)
           end
         end
@@ -247,40 +253,55 @@ module Coroutine                    #:nodoc:
           !send(position_column).nil?
         end
 
+        # This returns whether or not the position column is blank.
+        def position_blank?
+          return self.send(position_column).blank?
+        end
+        
+        # This method indicates whether or not the gem is being used within the 
+        # rails 3 environment.
+        def rails_3?
+          return acts_as_list_class.respond_to?(:arel_table)
+        end
+        
+        
+        
         private
+          
+          # This method adds the new item to the top of the list.
           def add_to_list_top
             increment_positions_on_all_items
           end
 
+          # This method adds the new item to the bottom of the list.
           def add_to_list_bottom
             self[position_column] = bottom_position_in_list.to_i + 1
           end
 
-          # Returns the bottom position number in the list.
-          #   bottom_position_in_list    # => 2
+          # This method returns the bottom position number in the list.
           def bottom_position_in_list(except = nil)
             item = bottom_item(except)
             item ? item.send(position_column) : 0
           end
 
-          # Returns the bottom item
+          # This method returns the bottom item.
           def bottom_item(except = nil)
             conditions  = scope_condition
-            conditions  = "#{conditions} AND #{self.class.primary_key} != #{except.id}" if except
+            conditions  = "#{conditions} AND #{self.class.primary_key} != #{except.id}" unless except.blank?
             order_by    = "#{position_column} DESC"
-            begin
-              acts_as_list_class.where(conditions).first.order(order_by)
-            rescue
+            if self.rails_3?
+              acts_as_list_class.where(conditions).order(order_by).first
+            else
               acts_as_list_class.find(:first, :conditions => conditions, :order => order_by)
             end
           end
 
-          # Forces item to assume the bottom position in the list.
+          # This method forces item to assume the bottom position in the list.
           def assume_bottom_position
             update_attribute(position_column, bottom_position_in_list(self).to_i + 1)
           end
 
-          # Forces item to assume the top position in the list.
+          # This method forces item to assume the top position in the list.
           def assume_top_position
             update_attribute(position_column, 1)
           end
@@ -322,6 +343,7 @@ module Coroutine                    #:nodoc:
             )
           end
 
+          # This adds the item at the specified position value.
           def insert_at_position(position)
             remove_from_list
             increment_positions_on_lower_items(position)

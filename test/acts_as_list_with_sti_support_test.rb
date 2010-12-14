@@ -3,7 +3,7 @@
 #---------------------------------------------------------
 
 # all generic requirements are in the helper
-require "test/test_helper"
+require "test_helper"
 
 
 
@@ -99,9 +99,9 @@ end
 
 # Contacts
 class Contact < ActiveRecord::Base
-  has_many :emails
-  has_many :phones
-  has_many :websites
+  has_many :emails,   :order => "pos"
+  has_many :phones,   :order => "position"
+  has_many :websites, :order => "position"
   
   def email_ids
     self.emails(true).map(&:id)
@@ -277,6 +277,39 @@ class ActsAsListTest < ActiveSupport::TestCase
   
   
   #---------------------------------------------
+  # test default ordering
+  #---------------------------------------------
+  
+  def test_default_ordering
+  
+    # standard model
+    assert_equal 4, Contact.first.phones.size
+    
+    p3 = Phone.create!({ :contact_id => Contact.last.id,  :number => "901.555.7777" })
+    assert_equal 3, p3.position
+    
+    p5 = Phone.create!({ :contact_id => Contact.last.id,  :number => "901.555.9999", :position => 5 })
+    p4 = Phone.create!({ :contact_id => Contact.last.id,  :number => "901.555.8888", :position => 4 })
+    assert_equal 4, p4.position
+    assert_equal 5, p5.position
+    
+    
+    # sti model
+    assert_equal 0, TaxFrequency.count
+    
+    t1 = TaxFrequency.create!({ :label => "Monthly" })
+    assert_equal 1, t1.position
+    
+    t3 = TaxFrequency.create!({ :label => "Yearly",    :position => 3 })
+    t2 = TaxFrequency.create!({ :label => "Quarterly", :position => 2 }) 
+    assert_equal 2, t2.position
+    assert_equal 3, t3.position
+    
+  end
+    
+    
+    
+  #---------------------------------------------
   # test ordering methods
   #---------------------------------------------
   
@@ -285,51 +318,51 @@ class ActsAsListTest < ActiveSupport::TestCase
     # standard model
     contact = Contact.first
     assert_equal [1, 2, 3, 4], contact.phone_ids
-
+  
     Phone.find(2).move_lower
     assert_equal [1, 3, 2, 4], contact.phone_ids
-
+  
     Phone.find(2).move_higher
     assert_equal [1, 2, 3, 4], contact.phone_ids
-
+  
     Phone.find(1).move_to_bottom
     assert_equal [2, 3, 4, 1], contact.phone_ids
-
+  
     Phone.find(1).move_to_top
     assert_equal [1, 2, 3, 4], contact.phone_ids
-
+  
     Phone.find(2).move_to_bottom
     assert_equal [1, 3, 4, 2], contact.phone_ids
-
+  
     Phone.find(4).move_to_top
     assert_equal [4, 1, 3, 2], contact.phone_ids
     
     
     # sti model
     assert_equal [1, 2, 3, 4], BillingFrequency.ids
-
+  
     BillingFrequency.find(2).move_lower
     assert_equal [1, 3, 2, 4], BillingFrequency.ids
-
+  
     BillingFrequency.find(2).move_higher
     assert_equal [1, 2, 3, 4], BillingFrequency.ids
-
+  
     BillingFrequency.find(1).move_to_bottom
     assert_equal [2, 3, 4, 1], BillingFrequency.ids
-
+  
     BillingFrequency.find(1).move_to_top
     assert_equal [1, 2, 3, 4], BillingFrequency.ids
-
+  
     BillingFrequency.find(2).move_to_bottom
     assert_equal [1, 3, 4, 2], BillingFrequency.ids
-
+  
     BillingFrequency.find(4).move_to_top
     assert_equal [4, 1, 3, 2], BillingFrequency.ids
   end
-
-
+  
+  
   def test_move_to_bottom_with_next_to_last_item
-
+  
     # standard model
     contact = Contact.first
     assert_equal [1, 2, 3, 4], contact.phone_ids
@@ -360,8 +393,8 @@ class ActsAsListTest < ActiveSupport::TestCase
     assert_equal BillingFrequency.find(3), BillingFrequency.find(4).higher_item
     assert_nil BillingFrequency.find(4).lower_item
   end
- 
- 
+   
+   
   def test_insert
     
     # standard model
@@ -369,17 +402,17 @@ class ActsAsListTest < ActiveSupport::TestCase
     assert_equal 1, new.position
     assert new.first?
     assert new.last?
-
+  
     new = Phone.create(:contact_id => 3, :number => "901.555.8888")
     assert_equal 2, new.position
     assert !new.first?
     assert new.last?
-
+  
     new = Phone.create(:contact_id => 3, :number => "901.555.9999")
     assert_equal 3, new.position
     assert !new.first?
     assert new.last?
-
+  
     new = Phone.create(:contact_id => 4, :number => "901.555.0000")
     assert_equal 1, new.position
     assert new.first?
@@ -391,17 +424,17 @@ class ActsAsListTest < ActiveSupport::TestCase
     assert_equal 1, new.position
     assert new.first?
     assert new.last?
-
+  
     new = TaxFrequency.create(:label => "Quarterly")
     assert_equal 2, new.position
     assert !new.first?
     assert new.last?
-
+  
     new = TaxFrequency.create(:label => "Yearly")
     assert_equal 3, new.position
     assert !new.first?
     assert new.last?
-
+  
     new = PaymentFrequency.create(:label => "Monthly")
     assert_equal 1, new.position
     assert new.first?
@@ -414,34 +447,34 @@ class ActsAsListTest < ActiveSupport::TestCase
     # stadard model
     new = Phone.create(:contact_id => 3, :number => "615.555.1111")
     assert_equal 1, new.position
-
+  
     new = Phone.create(:contact_id => 3, :number => "615.555.2222")
     assert_equal 2, new.position
-
+  
     new = Phone.create(:contact_id => 3, :number => "615.555.3333")
     assert_equal 3, new.position
-
+  
     new4 = Phone.create(:contact_id => 3, :number => "615.555.4444")
     assert_equal 4, new4.position
-
+  
     new4.insert_at(3)
     assert_equal 3, new4.position
-
+  
     new.reload
     assert_equal 4, new.position
-
+  
     new.insert_at(2)
     assert_equal 2, new.position
-
+  
     new4.reload
     assert_equal 4, new4.position
-
+  
     new5 = Phone.create(:contact_id => 3, :number => "615.555.5555")
     assert_equal 5, new5.position
-
+  
     new5.insert_at(1)
     assert_equal 1, new5.position
-
+  
     new4.reload
     assert_equal 5, new4.position
     
@@ -449,45 +482,45 @@ class ActsAsListTest < ActiveSupport::TestCase
     # sti model
     new = TaxFrequency.create(:label => "Weekly")
     assert_equal 1, new.position
-
+  
     new = TaxFrequency.create(:label => "Monthly")
     assert_equal 2, new.position
-
+  
     new = TaxFrequency.create(:label => "Quarterly")
     assert_equal 3, new.position
-
+  
     new4 = TaxFrequency.create(:label => "Yearly")
     assert_equal 4, new4.position
-
+  
     new4.insert_at(3)
     assert_equal 3, new4.position
-
+  
     new.reload
     assert_equal 4, new.position
-
+  
     new.insert_at(2)
     assert_equal 2, new.position
-
+  
     new4.reload
     assert_equal 4, new4.position
-
+  
     new5 = TaxFrequency.create(:label => "Daily")
     assert_equal 5, new5.position
-
+  
     new5.insert_at(1)
     assert_equal 1, new5.position
-
+  
     new4.reload
     assert_equal 5, new4.position
   end
-
-
+  
+  
   def test_delete_middle
     
     # standard model
     contact = Contact.first
     assert_equal [1, 2, 3, 4], contact.phone_ids
-
+  
     Phone.find(2).destroy
     assert_equal [1, 3, 4], contact.phone_ids
     
@@ -498,8 +531,8 @@ class ActsAsListTest < ActiveSupport::TestCase
     Phone.find(1).destroy
     assert_equal [3, 4], contact.phone_ids
     
-    # assert_equal 1, Phone.find(3).position
-    # assert_equal 2, Phone.find(4).position
+    assert_equal 1, Phone.find(3).position
+    assert_equal 2, Phone.find(4).position
     
     
     # sti model
@@ -518,8 +551,8 @@ class ActsAsListTest < ActiveSupport::TestCase
     assert_equal 1, BillingFrequency.find(3).position
     assert_equal 2, BillingFrequency.find(4).position
   end
-
-
+  
+  
   def test_remove_from_list_should_then_fail_in_list? 
     
     # standard model
@@ -535,7 +568,7 @@ class ActsAsListTest < ActiveSupport::TestCase
     BillingFrequency.find(1).remove_from_list
     assert_equal false, BillingFrequency.find(1).in_list?
   end 
-
+  
    
   def test_remove_from_list_should_set_position_to_nil 
     
@@ -563,8 +596,8 @@ class ActsAsListTest < ActiveSupport::TestCase
     assert_equal 2,   BillingFrequency.find(3).position
     assert_equal 3,   BillingFrequency.find(4).position
   end 
-
-
+  
+  
   def test_remove_before_destroy_does_not_shift_lower_items_twice 
     
     # standard model
