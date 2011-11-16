@@ -1,1 +1,0 @@
-require "acts_as_list_with_sti_support"

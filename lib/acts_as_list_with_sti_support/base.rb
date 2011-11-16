@@ -54,40 +54,31 @@ module Coroutine                    #:nodoc:
           #--------------------------------------------
           class_eval do
             
-            # Add inheritable accessors
-            write_inheritable_attribute :acts_as_list_column,           column
-            class_inheritable_reader    :acts_as_list_column
-            write_inheritable_attribute :acts_as_list_scope,            scope
-            class_inheritable_reader    :acts_as_list_scope
-            write_inheritable_attribute :acts_as_list_default_scope,    "1 = 1"
-            class_inheritable_reader    :acts_as_list_default_scope
-            write_inheritable_attribute :acts_as_list_scope_condition,  nil
-            class_inheritable_reader    :acts_as_list_scope_condition
+            # define attributes
+            class_attribute :acts_as_list_column
+            class_attribute :acts_as_list_scope
+            class_attribute :acts_as_list_default_scope
+            class_attribute :acts_as_list_scope_condition
+            
+            # set values from options
+            self.acts_as_list_column          = column
+            self.acts_as_list_scope           = scope
+            self.acts_as_list_default_scope   = "1 = 1"
+            self.acts_as_list_scope_condition = nil
             
             
-            # Add validations (column is allowed to be nil to support soft deletes)
+            # validations (column is allowed to be nil to support soft deletes)
             validates_numericality_of   column, :only_integer => true, :greater_than => 0, :allow_nil => true
             
             
-            # Include instance methods
+            # instance methods
             include Coroutine::ActsAsList::Base::InstanceMethods
 
 
-            # rails 3
-            if self.respond_to?(:arel_table)
-              before_validation             :add_to_list_bottom, :if => :position_blank?, :on => :create     
-              before_destroy                :remove_from_list
-            
-            # rails 2
-            else
-              before_validation_on_create   :add_to_list_bottom, :if => :position_blank? 
-              before_destroy                :remove_from_list
+            # callbacks
+            before_validation   :add_to_list_bottom, :if => :position_blank?, :on => :create     
+            before_destroy      :remove_from_list
               
-              if self.default_scoping.empty?
-                default_scope :order => column.to_s
-              end
-            end
-            
           end
           
         end
@@ -229,11 +220,8 @@ module Coroutine                    #:nodoc:
         def higher_item
           return nil unless in_list?
           conditions = "#{scope_condition} AND #{position_column} = #{(send(position_column).to_i - 1).to_s}"
-          if self.rails_3?
-            acts_as_list_class.where(conditions).first
-          else
-            acts_as_list_class.find(:first, :conditions => conditions)
-          end
+          
+          acts_as_list_class.where(conditions).first
         end
 
         # This method returns the next lower item in the list.
@@ -241,11 +229,8 @@ module Coroutine                    #:nodoc:
         def lower_item
           return nil unless in_list?
           conditions = "#{scope_condition} AND #{position_column} = #{(send(position_column).to_i + 1).to_s}"
-          if self.rails_3?
-            acts_as_list_class.where(conditions).first
-          else
-            acts_as_list_class.find(:first, :conditions => conditions)
-          end
+          
+          acts_as_list_class.where(conditions).first
         end
 
         # Test if this record is in a list
@@ -256,12 +241,6 @@ module Coroutine                    #:nodoc:
         # This returns whether or not the position column is blank.
         def position_blank?
           return self.send(position_column).blank?
-        end
-        
-        # This method indicates whether or not the gem is being used within the 
-        # rails 3 environment.
-        def rails_3?
-          return acts_as_list_class.respond_to?(:arel_table)
         end
         
         
@@ -289,11 +268,8 @@ module Coroutine                    #:nodoc:
             conditions  = scope_condition
             conditions  = "#{conditions} AND #{self.class.primary_key} != #{except.id}" unless except.blank?
             order_by    = "#{position_column} DESC"
-            if self.rails_3?
-              acts_as_list_class.where(conditions).order(order_by).first
-            else
-              acts_as_list_class.find(:first, :conditions => conditions, :order => order_by)
-            end
+            
+            acts_as_list_class.where(conditions).order(order_by).first
           end
 
           # This method forces item to assume the bottom position in the list.
